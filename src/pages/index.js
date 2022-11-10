@@ -1,8 +1,11 @@
 import SplashScreen from "./SplashScreen";
 import SignIn from "./SignIn";
 import StartStock from "./StartStock";
+import InputStock from "./InputStock";
+import FinishStock from "./FinishStock";
+import Dashboard from "./Dashboard";
 
 
 export{
-    SplashScreen, SignIn, StartStock
+    SplashScreen, SignIn, StartStock, InputStock,FinishStock,Dashboard
 };

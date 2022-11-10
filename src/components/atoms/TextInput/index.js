@@ -13,6 +13,6 @@ const TextInput = ({label, placeholder}) => {
 export default TextInput
 
 const styles = StyleSheet.create({
-  label:{fontSize:16, fontFamily: 'Poppins-Reguler', color:'#404040'},
+  label:{fontSize:16, fontFamily: 'Poppins-Reguler', color:'#404040', paddingBottom:8},
   input:{borderWidth:1, borderColor:'#404040', borderRadius:8, padding:10}
 });
