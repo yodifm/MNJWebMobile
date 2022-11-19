@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 const Router = () => {
     return (
     <Stack.Navigator>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown:false}}/>
+        {/* <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown:false}}/> */}
         <Stack.Screen name="SignIn" component={SignIn} options={{headerShown:false}}/>
         <Stack.Screen name="StartStock" component={StartStock} options={{headerShown:false}}/>
         <Stack.Screen name="Dashboard" component={Dashboard} options={{headerShown:false}}/>

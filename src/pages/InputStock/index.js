@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Header, Product, TextInput2, Gap, Button } from '../../components'
 
-const InputStock = () => {
+const InputStock = ({navigation}) => {
   return (
     <View style={styles.page}>
         <Header title="Input Stock Opname" subTitle="Click start after you filled" onBack={() => {}}/>
@@ -19,7 +19,7 @@ const InputStock = () => {
             <TextInput2 placeholder="Unit"/>
           </View>
           <Gap height={24}/>
-          <Button style={styles.button} text="Save Data" color="#2442AF" textColor="#fff"/>
+          <Button style={styles.button} text="Save Data" color="#2442AF" textColor="#fff" onPress={() => navigation.navigate('Dashboard')}/>
           <Gap height={20}/>
             <Text style={styles.label}>Latest Historical </Text>
             <Gap height={20}/>
