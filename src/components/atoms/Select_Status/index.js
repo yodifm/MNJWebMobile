@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Picker } from '@react-native-picker/picker'
 
-const Select = ({label, value, onSelectChange}) => {
+const Select_Status = ({label, value, onSelectChange}) => {
   return (
     <View>
       <Text style={styles.label}>{label}</Text>
@@ -13,15 +13,15 @@ const Select = ({label, value, onSelectChange}) => {
                 onSelectChange(itemValue)
             }
             >
-            <Picker.Item label="Konimex" value="Konimex" />
-            <Picker.Item label="Tasen" value="Tasen" />
+            <Picker.Item label="Baik" value="Baik" />
+            <Picker.Item label="Rusak" value="Rusak" />
         </Picker>
       </View>
     </View>
   )
 }
 
-export default Select
+export default Select_Status
 
 const styles = StyleSheet.create({
     label:{fontSize:16, fontFamily: 'Poppins-Reguler', color:'#404040', paddingBottom:8},

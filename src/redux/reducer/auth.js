@@ -1,6 +1,6 @@
 const initStateLogin = {
     username: '',
-    password: ''
+    password: '',
 } 
 
 export const loginReducer = (state = initStateLogin, action) => {
@@ -11,5 +11,6 @@ export const loginReducer = (state = initStateLogin, action) => {
             password: action.value.password
         }
     }
+  
     return state;
 }

@@ -8,14 +8,12 @@ import { Login } from '../../assets'
 import { useForm } from '../../utils'
 import Axios from 'axios'
 import { ScrollView } from 'react-native-gesture-handler'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 const SignIn = ({navigation}) => {
-//    const[NIK, setNIK] = useState('');
-//    const [PASSWORD, setPASSWORD] = useState('');
 
-const globalState = useSelector(state => state.globalReducer);
-console.log('global', globalState);
+const dispatch = useDispatch();
+
   
 const [form, setForm] = useForm({
     username: '',
@@ -24,6 +22,9 @@ const [form, setForm] = useForm({
 
     const onSubmit = () => {
      console.log('form', form);
+     dispatch({
+      type: 'SET_LOGIN', value: form
+     });
      Axios.post('https://marganusantarajaya.com/api_stock_opname/login.php', form)
      .then(res => {
        console.log('success', res);
@@ -31,10 +32,11 @@ const [form, setForm] = useForm({
      .catch(err => {
        console.log('error', err);
      })
+     navigation.navigate('StartStock')
 };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{flexGrow:1}}>
 
        <View style = {styles.page}>
            <Header title="Sign In" subTitle="Login to continue your journey"/>
