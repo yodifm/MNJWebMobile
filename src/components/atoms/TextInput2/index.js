@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput as TextInputRN} from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 
 const TextInput2 = ({label, placeholder}) => {
+  const [number, setNumber] = useState('111')
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInputRN style={styles.input} placeholder={placeholder}/>
+      <TextInputRN style={styles.input} placeholder={placeholder} keyboardType='number-pad'/>
     </View>
   )
 }

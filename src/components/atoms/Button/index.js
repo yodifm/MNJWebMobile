@@ -2,11 +2,11 @@ import { StyleSheet, Text, Touchable, View } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const Button = ({text , color ='#2442AF', textColor='#fff', onPress}) => {
+const Button = ({txt , color ='#2442AF', textColor='#fff', onPress}) => {
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
       <View style={styles.container(color)}>
-        <Text style={styles.text(textColor)}>{text}</Text>
+        <Text style={styles.text(textColor)}>{txt}</Text>
       </View>
     </TouchableOpacity>
   );

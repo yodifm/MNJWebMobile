@@ -3,12 +3,16 @@ import React from 'react'
 import { IcBack } from '../../../assets'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-const Header = ({title, subTitle, onBack}) => {
+
+
+
+const Header = ({title, subTitle, onBack, moveBack}) => {
+  
   return (
     <View style={styles.container}>
       {
         onBack && (
-        <TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity activeOpacity={0.5} onPress={moveBack}>
           <View style={styles.back}>
             <IcBack/>
           </View>
@@ -19,7 +23,7 @@ const Header = ({title, subTitle, onBack}) => {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.SubTitle}>{subTitle}</Text>
       </View>
-    </View>
+    </View>   
   )
 }
 
