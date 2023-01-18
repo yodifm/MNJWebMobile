@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Alert, RefreshControl,} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import { Dropdown } from 'react-native-element-dropdown';
+import {Dropdown} from 'react-native-element-dropdown';
 import {
   Header,
   TextInput,
@@ -13,10 +13,9 @@ import {useForm} from '../../utils';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
-import {Picker} from '@react-native-picker/picker';   
 
 const initState = {
-  branch:'',
+  branch: '',
   number: '',
   code: '',
   warehouse_code: '',
@@ -24,20 +23,23 @@ const initState = {
 };
 
 const StartStock = ({navigation, route}) => {
-  
   const [form, setForm] = useForm({
     number: '',
     code: '',
     status: '',
     warehouse_code: '',
   });
-  
-  var val3, val4, val5
+
+  var val3, val4, val5;
   const [chosen, setChosen] = useState(initState);
   const [codeData, setCodeData] = useState([]);
   const [warehouseData, setWarehouseData] = useState([]);
   const [statusData, setStatusData] = useState([]);
-  const[isFocus, setIsFocus] = useState(false)
+  const [listClosing, setListClosing] = useState([]);
+  const [ResetData, setResetData] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const [isFocus, setIsFocus] = useState(false);
   var princ_code;
   const dispatch = useDispatch();
   const loginReducer = useSelector(state => state.loginReducer);
@@ -47,17 +49,12 @@ const StartStock = ({navigation, route}) => {
 
   // useEffect(() => {
   //   val3 = {
-      
-  //     branch_code : data.branch,
-  //     transaction_number : data.number,
-  //     principal_code : data.code,
-  //     warehouse_code : data.warehouse,
-  //     status : data.status,
+  //     branch_code : loginReducer.kode_cbg
   //   }
-    
+
   //   console.log(val3)
   //   Axios.post(
-  //     'https://marganusantarajaya.com/api_stock_opname/display/list_product.php',
+  //     'https://marganusantarajaya.com/api_stock_opname/display/list_number_stock.php',
   //     val3,
   //   )
   //     .then(function (response) {
@@ -78,6 +75,13 @@ const StartStock = ({navigation, route}) => {
   //     });
   // });
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 200);
+  }, []);
+
   const onSubmit = () => {
     dispatch({
       type: 'SET_STOCK_DATA',
@@ -87,14 +91,12 @@ const StartStock = ({navigation, route}) => {
     navigation.navigate('Dashboard', {
       data: chosen,
     });
-    
-   };
-
+  };
 
   const handleCode = value => {
     console.log(chosen.number);
-    console.log(value.transaction_number)
-   val3 = {
+    console.log(value.transaction_number);
+    val3 = {
       branch_code: branch_code,
       transaction_number: value.transaction_number,
     };
@@ -103,6 +105,24 @@ const StartStock = ({navigation, route}) => {
       val3,
     )
       .then(function (response) {
+        console.log(response.data)
+        // if (response.data == null) {
+        //   //function to make two option alert
+        //   Alert.alert(
+        //     //title
+        //     'Product Has been finish',
+        //     //body
+        //     'Please choose another product',
+        //     [
+        //       {
+        //         text: 'OK',
+        //         onPress: () => console.log('Yes Pressed'),
+        //       },
+        //     ],
+        //     {cancelable: false},
+        //     //clicking out side of alert will not cancel
+        //   );
+        // }
         var count = Object.keys(response.data).length;
         let stateArray = [];
         for (var i = 0; i < count; i++) {
@@ -120,19 +140,36 @@ const StartStock = ({navigation, route}) => {
   };
 
   const handleWarehouse = value => {
-    console.log(chosen.number)
-   val4 = {
+    console.log(chosen.number);
+    val4 = {
       branch_code: branch_code,
       transaction_number: chosen.number.transaction_number,
       principal_code: value.value,
     };
-    console.log(val4)
+    console.log(val4);
     Axios.post(
       'https://marganusantarajaya.com/api_stock_opname/display/list_warehouse.php',
       val4,
     )
       .then(function (response) {
-        console.log(response.data)
+        console.log(response.data);
+        // if (response.data == null) {
+        //   //function to make two option alert
+        //   Alert.alert(
+        //     //title
+        //     'Product Has been finish',
+        //     //body
+        //     'Please choose another product',
+        //     [
+        //       {
+        //         text: 'OK',
+        //         onPress: () => console.log('Yes Pressed'),
+        //       },
+        //     ],
+        //     {cancelable: false},
+        //     //clicking out side of alert will not cancel
+        //   );
+        // }
         var count = Object.keys(response.data).length;
         let stateArray = [];
         for (var i = 0; i < count; i++) {
@@ -149,41 +186,117 @@ const StartStock = ({navigation, route}) => {
       });
   };
 
-
   const handlestatus = value => {
-    console.log(chosen.number)
-    console.log(chosen.warehouse)
+    console.log(chosen.number);
+    console.log(chosen.warehouse_code);
     val5 = {
-       branch_code: branch_code,
-       transaction_number: chosen.number.transaction_number,
-       principal_code: chosen.code,
-       warehouse_code: value.value,
-     };
-     console.log(val5)
+      branch_code: branch_code,
+      transaction_number: chosen.number.transaction_number,
+      principal_code: chosen.code,
+      warehouse_code: value.value,
+    };
+    console.log(val5);
 
-     Axios.post(
-       'https://marganusantarajaya.com/api_stock_opname/display/list_status.php',
-       val5,
-     )
-       .then(function (response) {
-         console.log(response.data)
-         var count = Object.keys(response.data).length;
-         let stateArray = [];
-         for (var i = 0; i < count; i++) {
-           stateArray.push({
-             value: response.data[i].status, //postman value
-             label: response.data[i].status,
-           });
-         }
-         console.log(stateArray);
-         setStatusData(stateArray);
-       })
-       .catch(err => {
-         console.log('error', err);
-       });
-   };
+    Axios.post(
+      'https://marganusantarajaya.com/api_stock_opname/display/list_status.php',
+      val5,
+    )
+      .then(function (response) {
+        console.log(response.data);
+        // if (response.data == null) {
+        //   //function to make two option alert
+        //   Alert.alert(
+        //     //title
+        //     'Product Has been finish',
+        //     //body
+        //     'Please choose another product',
+        //     [
+        //       {
+        //         text: 'OK',
+        //         onPress: () => console.log('Yes Pressed'),
+        //       },
+        //     ],
+        //     {cancelable: false},
+        //     //clicking out side of alert will not cancel
+        //   );
+        // }
+        var count = Object.keys(response.data).length;
+        let stateArray = [];
+        for (var i = 0; i < count; i++) {
+          stateArray.push({
+            value: response.data[i].status, //postman value
+            label: response.data[i].status,
+          });
+        }
+        console.log(stateArray);
+        setStatusData(stateArray);
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  };
+
+ 
+
+  var valListClosing;
+  const SearchClosing = () => {
+    // console.log(inputSearch);
+    console.log(loginReducer.kode_cbg);
+
+    valListClosing = {
+      branch_code: loginReducer.kode_cbg,
+    };
+
+    // console.log(val3)
+    Axios.post(
+      'https://marganusantarajaya.com/api_stock_opname/display/list_transaction_closing.php',
+      valListClosing,
+    )
+      .then(function (response) {
+        console.log(response.data);
+        if (response.data == null) {
+          //function to make two option alert
+          Alert.alert(
+            //title
+            'Data Empty',
+            //body
+            'Data Dont Finish Yet',
+            [
+              {
+                text: 'OK',
+                onPress: () => console.log('Yes Pressed'),
+              },
+            ],
+            {cancelable: false},
+            //clicking out side of alert will not cancel
+          );
+        }
+        // console.log(response.data.length)
+        var count = Object.keys(response.data).length;
+        let stateArray = [];
+        for (var i = 0; i < count; i++) {
+          stateArray.push({
+            value: response.data[i],
+            // label: response.data[i],
+          });
+        }
+        // console.log(stateArray);
+        navigation.navigate('ListClosing', {
+          data_closing: stateArray,
+          branch_code: loginReducer.kode_cbg,
+        });
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  };
+
+  
+
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
       <View style={{}}>
         <Header
           title="Stock Opname"
@@ -192,31 +305,10 @@ const StartStock = ({navigation, route}) => {
         />
         <View style={styles.container}>
           <Gap height={24} />
-          
-          {/* <Picker
-            style={{width: '100%'}}
-            mode="dropdown"
-            selectedValue={chosen.number}
-            // defaultValue={chosen.number == '' ? null : chosen.number}
-            onValueChange={val => {
-              setChosen({...chosen , number : val});
-              handleCode(val);
-            }}>
-            {transaction_number != [] ? (
-              transaction_number.map(item => {
-                return (
-                  <Picker.Item
-                    label={item.transaction_number}
-                    value={item.transaction_number}
-                    key={item.transaction_number + '0'}
-                  />
-                );
-              })
-            ) : (
-              <Picker.Item label="Loading..." value="0" key="qweqeqeq" />
-            )}
-          </Picker> */}
+          {console.log(dataReducer)}
+
           <Dropdown
+            itemTextStyle={styles.itemTextStyle}
             style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -227,20 +319,21 @@ const StartStock = ({navigation, route}) => {
             maxHeight={300}
             labelField="transaction_number"
             valueField="transaction_number"
-            placeholder={'Select Number' }
+            placeholder={'Select Number'}
             searchPlaceholder="Search..."
             value={chosen.number}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
               setChosen({...chosen, number: item});
-              handleCode(item)
+              handleCode(item);
               setIsFocus(false);
             }}
           />
           <Gap height={16} />
-         
+
           <Dropdown
+            itemTextStyle={styles.itemTextStyle}
             style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -251,20 +344,21 @@ const StartStock = ({navigation, route}) => {
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder={'Select Principle' }
+            placeholder={'Select Principle'}
             searchPlaceholder="Search..."
             value={chosen.code}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
               setChosen({...chosen, code: item.value});
-              handleWarehouse(item)
+              handleWarehouse(item);
               setIsFocus(false);
             }}
           />
-          
+
           <Gap height={16} />
           <Dropdown
+            itemTextStyle={styles.itemTextStyle}
             style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -282,15 +376,14 @@ const StartStock = ({navigation, route}) => {
             onBlur={() => setIsFocus(false)}
             onChange={item => {
               setChosen({...chosen, warehouse_code: item.value});
-              handlestatus(item)
+              handlestatus(item);
               setIsFocus(false);
             }}
           />
-          
-
 
           <Gap height={16} />
           <Dropdown
+            itemTextStyle={styles.itemTextStyle}
             style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -307,14 +400,15 @@ const StartStock = ({navigation, route}) => {
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
-              setChosen({...chosen, status: item.value, branch:branch_code});
+              setChosen({...chosen, status: item.value, branch: branch_code});
               setIsFocus(false);
             }}
           />
-          
-         
+
           <Gap height={30} />
           <Button txt="Start Stock Opname" onPress={onSubmit} />
+          <Gap height={30} />
+          <Button txt="List Closing Transaction" color='red' onPress={SearchClosing} />
         </View>
       </View>
     </ScrollView>
@@ -335,7 +429,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontFamily: 'Poppins-Reguler',
-    color: '#404040',
+    color: '#000',
     paddingBottom: 8,
   },
   input: {
@@ -344,5 +438,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 2,
     paddingVertical: 0,
+  },
+  selectedTextStyle: {
+    color: '#000',
+  },
+  placeholderStyle: {
+    color: '#000',
+  },
+  inputSearchStyle: {
+    color: '#000',
+  },
+  itemTextStyle: {
+    color: '#000',
   },
 });

@@ -1,6 +1,14 @@
 const initStateLogin = {
-    username: '',
-    password: '',
+        username: '',
+        password: '',
+        nama_pegawai:'',
+        jabatan: '',
+        kode_cbg: '',
+        nama: '',
+        cabang: '',
+        region: '',
+        principal: '',
+        level: ''
 } 
 
 const initStateUserData= {
@@ -16,7 +24,7 @@ const initStateProductData= {
 }
 
 const initStateInputProductData= {
-    data:''
+    transaction_number:''
 }
 
 export const loginReducer = (state = initStateLogin, action) => {
@@ -24,7 +32,9 @@ export const loginReducer = (state = initStateLogin, action) => {
         return {
             ...state,
             username: action.value.username,
-            password: action.value.password
+            password: action.value.password,
+            jabatan:  action.value.jabatan,
+            kode_cbg: action.value.kode_cbg
         }
     }
   
@@ -36,7 +46,7 @@ if(action.type === 'SET_USER_DATA'){
     // console.log('action data' , action.value)
     return {
         ...state,
-        data: action.value,
+        transaction_number: action.value,
     }
 }
 return state;
