@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View } from 'react-native';
+import {FlatList, StyleSheet, Text, View, Alert } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   Header,
@@ -25,10 +25,38 @@ import { StackActions } from '@react-navigation/native';
 const ListClosing = ({navigation, route}) => {
   const {data_closing, branch_code} = route.params;
   const [closingData, setClosingData] = useState([]);
+  const dataReducer = useSelector(state => state.StockDataReducer);
+  const loginReducer = useSelector(state => state.loginReducer);
+  console.log(dataReducer);
+  console.log(loginReducer);
 
   console.log(data_closing);
   console.log(branch_code);
   console.log(data_closing[0].value.transaction_number)
+  console.log(loginReducer.jabatan)
+
+
+  const alertClosing = () => {
+    Alert.alert(
+          //title
+          'Confirmation',
+          //body
+          'Are you sure to closing the stock opname',
+          [
+            {
+              text: 'No',
+              onPress: () => navigation.navigate('ListClosing'),
+            },
+            {
+              text: 'Yes',
+              onPress: () => DataClosing(),
+            },
+            
+          ],
+          {cancelable: false},
+          //clicking out side of alert will not cancel
+        );
+  }
 
   var valClosingData;
 
@@ -58,9 +86,7 @@ const ListClosing = ({navigation, route}) => {
           console.log('error', err);
         });
       }
-      navigation.dispatch(
-        StackActions.replace('SignIn', { test: 'Test Params' })
-    )
+      navigation.navigate('FirstPage')
   };
 
   return (
@@ -129,7 +155,8 @@ const ListClosing = ({navigation, route}) => {
         );
       })}
       <Gap height={20}/>
-      <Button txt="Closing" onPress={() => DataClosing()} />
+      {loginReducer.jabatan === 'PAGDG'  ? (<Text></Text>) : <Button txt="Closing" onPress={() => alertClosing()} />}
+      
     </View>
   );
 };

@@ -61,15 +61,11 @@ const SignIn = ({navigation}) => {
                 text: 'OK',
                 onPress: () => console.log('Yes Pressed'),
               },
-              
             ],
             {cancelable: false},
             //clicking out side of alert will not cancel
           );
-        }
-        else{
-
-  
+        } else {
           val = {branch_code: res.data[0].kode_cbg};
           Axios.post(
             'https://marganusantarajaya.com/api_stock_opname/display/list_number_stock.php',
@@ -77,36 +73,34 @@ const SignIn = ({navigation}) => {
           )
             .then(result => {
               console.log(result.data[0]);
-             
-          dispatch({
-            type: 'SET_USER_DATA',
-            value: result.data,
-          });
-             
-                navigation.navigate('StartStock', {
-                  user_data: res.data,
-                  transaction_number: result.data,
-                  branch_code: res.data[0].kode_cbg,
-                });
-              
+
+              dispatch({
+                type: 'SET_USER_DATA',
+                value: result.data,
+              });
+
+              navigation.navigate('FirstPage', {
+                user_data: res.data,
+                transaction_number: result.data,
+                branch_code: res.data[0].kode_cbg,
+              });
             })
             .catch(err => {
-            
-                //function to make two option alert   
-                Alert.alert(
-                  //title
-                  'Data does not exist',
-                  //body
-                  'Please Generate Data',
-                  [
-                    {
-                      text: 'OK',
-                      onPress: () => console.log('Yes Pressed'),
-                    },
-                  ],
-                  {cancelable: false},
-                  //clicking out side of alert will not cancel
-                )
+              //function to make two option alert
+              Alert.alert(
+                //title
+                'Data does not exist',
+                //body
+                'Please Generate Data',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => console.log('Yes Pressed'),
+                  },
+                ],
+                {cancelable: false},
+                //clicking out side of alert will not cancel
+              );
               console.log('error', err);
             });
         }
@@ -141,16 +135,18 @@ const SignIn = ({navigation}) => {
 
           <TextInput
             color="#000"
-            label="username"
+            label="Username"
             placeholder="Enter Your username"
+            placeholderTextColor="#7A7B84"
             value={form.username}
             onChangeText={value => setForm('username', value)}
           />
           <Gap height={16} />
           <TextInput
             color="#000"
-            label="password"
+            label="Password"
             placeholder="Enter Your password"
+            placeholderTextColor="#7A7B84"
             value={form.password}
             onChangeText={value => setForm('password', value)}
             secureTextEntry={true}
@@ -158,6 +154,11 @@ const SignIn = ({navigation}) => {
 
           <Gap height={24} />
           <Button txt="Login" onPress={onSubmit} />
+          <View style={{backgroundColor: 'white'}}>
+            <Gap height={30} />
+          </View>
+          <Text style={styles.versi}>Stock Opname Versi 1.0</Text>
+          <Text style={styles.name}>EDP MNJ</Text>
         </View>
       </View>
     </ScrollView>
@@ -173,6 +174,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 10,
     flex: 1,
+  },
+  versi: {
+    fontSize: 12,
+    backgroundColor: 'white',
+    color: '#7A7B84',
+    textAlign: 'center',
+  },
+  name: {
+    fontSize: 10,
+    backgroundColor: 'white',
+    color: '#7A7B84',
+    textAlign: 'center',
   },
 
   // Login: {justifyContent:'center', alignItems:'center', flex:1},

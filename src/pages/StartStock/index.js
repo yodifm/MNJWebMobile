@@ -91,13 +91,14 @@ const StartStock = ({navigation, route}) => {
     navigation.navigate('Dashboard', {
       data: chosen,
     });
+    setChosen(initState)
   };
 
   const handleCode = value => {
     console.log(chosen.number);
     console.log(value.transaction_number);
     val3 = {
-      branch_code: branch_code,
+      branch_code: loginReducer.kode_cbg,
       transaction_number: value.transaction_number,
     };
     Axios.post(
@@ -142,7 +143,7 @@ const StartStock = ({navigation, route}) => {
   const handleWarehouse = value => {
     console.log(chosen.number);
     val4 = {
-      branch_code: branch_code,
+      branch_code: loginReducer.kode_cbg,
       transaction_number: chosen.number.transaction_number,
       principal_code: value.value,
     };
@@ -190,7 +191,7 @@ const StartStock = ({navigation, route}) => {
     console.log(chosen.number);
     console.log(chosen.warehouse_code);
     val5 = {
-      branch_code: branch_code,
+      branch_code: loginReducer.kode_cbg,
       transaction_number: chosen.number.transaction_number,
       principal_code: chosen.code,
       warehouse_code: value.value,
@@ -294,14 +295,13 @@ const StartStock = ({navigation, route}) => {
   
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }>
+    <ScrollView >
       <View style={{}}>
         <Header
           title="Stock Opname"
           subTitle="Click start after you filled"
           onBack={() => {}}
+          moveBack={() => navigation.goBack()}
         />
         <View style={styles.container}>
           <Gap height={24} />
@@ -400,7 +400,7 @@ const StartStock = ({navigation, route}) => {
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
-              setChosen({...chosen, status: item.value, branch: branch_code});
+              setChosen({...chosen, status: item.value, branch: loginReducer.kode_cbg});
               setIsFocus(false);
             }}
           />
@@ -408,7 +408,7 @@ const StartStock = ({navigation, route}) => {
           <Gap height={30} />
           <Button txt="Start Stock Opname" onPress={onSubmit} />
           <Gap height={30} />
-          <Button txt="List Closing Transaction" color='red' onPress={SearchClosing} />
+          {/* <Button txt="List Closing Transaction" color='red' onPress={SearchClosing} /> */}
         </View>
       </View>
     </ScrollView>

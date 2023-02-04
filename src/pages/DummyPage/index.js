@@ -13,7 +13,7 @@ const initState = {
   unit3: '',
 };
 
-const InputStock = ({navigation, route}) => {
+const DummyPage = ({navigation, route}) => {
   var valselisih, valhistory;
 
   const dataReducer = useSelector(state => state.StockDataReducer);
@@ -23,7 +23,6 @@ const InputStock = ({navigation, route}) => {
   const [stock, setStock] = useState(initState);
   const [selisih, setSelisih] = useState([]);
   const [history, setHistory] = useState([]);
-  
 
   const {data} = route.params;
 
@@ -41,44 +40,8 @@ const InputStock = ({navigation, route}) => {
   const [test, setTest] = useState(false);
 
   const [historyafter, setHistoryAfter] = useState([])
-  const [checkhistory, setCheckHistory] = useState([]);
 
-
-  
-var valhistory;
- const testHistory = () => {
-
-  valhistory = {
-    branch_code: dataReducer.branch_code,
-    transaction_number: dataReducer.transaction_number,
-    principal_code: dataReducer.principal_code,
-    status: dataReducer.status,
-    warehouse_code: dataReducer.warehouse_code,
-
-    product_code: data.product_code,
-  };
-
-  Axios.post(
-    'https://marganusantarajaya.com/api_stock_opname/display/history_stok.php',
-    valhistory,
-  ) .then(function (response) {
-    console.log(response)
-    // console.log(response.data.length)
-    var count = Object.keys(response.data).length;
-    let stateArray = [];
-    for (var i = 0; i < count; i++) {
-      stateArray.push({
-        value: response.data[i],
-        // label: response.data[i],
-      });
-    }
-    // console.log(stateArray);
-    setHistory(stateArray);
-  })
-  .catch(err => {
-    console.log('error', err);
-  });
- }
+  //format
   
   useEffect(() => {
     valhistory = {
@@ -216,16 +179,13 @@ var valhistory;
                 [
                   {
                     text: 'OK',
-                    // onPress: () => navigation.navigate('InputStock'),
-                    onPress: () => testHistory(),
-                    
+                    onPress: () => navigation.goBack(),
                   },
-                ],    
+                ],
                 {cancelable: false},
                 //clicking out side of alert will not cancel
               ).then(function (response){
-                navigation.navigate('InputStock')
-                
+                navigation.goBack()
               })
           })
           .catch(err => {
@@ -243,7 +203,7 @@ var valhistory;
     <View style={styles.page}>
       <Header
         title="Stock Opname"
-        subTitle="Click Save after you filled"
+        subTitle="Click start after you filled"
         onBack={() => {}}
         moveBack={() => navigation.goBack()}
       />
@@ -252,8 +212,8 @@ var valhistory;
         
         <Product
           label={data.product_name}
-          quantity={loginReducer.jabatan === 'PAGDG'  ? (<Text></Text>) : <Text>{displayunit}</Text>}
-          total={loginReducer.jabatan === 'PAGDG'  ? (<Text></Text>) : <Text>{displaytotal}</Text>}
+          quantity={displayunit}
+          total={displaytotal}
           selisih={selisih}  
           jabatan = {loginReducer.jabatan}
         />
@@ -310,9 +270,6 @@ var valhistory;
           textcolor="#fff"
           onPress={insert_data}
         />
-        {/* <Button txt="reload" onPress={testHistory}></Button> */}
-        {/* <NumericFormat keyboardType='number-pad' displayType={'text'} thousandSeparator={true} prefix={'$'} /> */}
-
 
         <Gap height={20} />
         <Text style={styles.label}>Latest Historical </Text>
@@ -376,13 +333,13 @@ var valhistory;
   );
 };
 
-export default InputStock;
+export default DummyPage;
 
 const styles = StyleSheet.create({
   page: {flex: 1},
   container: {
     backgroundColor: '#fff',
-    paddingVertical: 5,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     flex: 1,
   },

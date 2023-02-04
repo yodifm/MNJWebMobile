@@ -3,6 +3,7 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { loginReducer } from '../../../redux/reducer/auth'
 
+
 const Product = ({label, quantity, total, selisih, jabatan}) => {
 
   return (
@@ -23,7 +24,7 @@ const Product = ({label, quantity, total, selisih, jabatan}) => {
         </View>
         <View style={styles.info}>
             {console.log(jabatan)}
-                {jabatan === 'BM' || jabatan === 'BAO' ? (<Text style={styles.selisih_num}>{selisih.selisih != undefined ? `Selisih: ${selisih.selisih} Unit`: "Selisih : 0 Unit"}</Text>) : null}
+                {jabatan === 'PAGDG' ? (<Text></Text>) : <Text style={styles.selisih_num}>{selisih.selisih != undefined ? `Selisih: ${selisih.selisih} Unit`: "Selisih : 0 Unit"}</Text>}
                 <Text style={styles.input_num}>{selisih.input != undefined ? `Input: ${selisih.input} Unit`: "Input: 0 Unit"}</Text>
         </View>
     </TouchableOpacity> 
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     total:{fontSize: 18, fontFamily:'Poppins-Medium', color:'#6E5DE7', fontWeight:'bold'},
     move:{padding:8, marginRight:8, marginLeft:5}, 
     info:{flexDirection:'row'},
-    selisih_num:{fontSize: 10, fontFamily:'Poppins-light', color:'#FF0000', marginLeft:20},
-    input_num:{fontSize: 10, fontFamily:'Poppins-light', color:'#000', marginLeft:140},
+    selisih_num:{fontSize: 12, fontFamily:'Poppins-light', color:'#FF0000', marginLeft:20},
+    input_num:{fontSize: 12, fontFamily:'Poppins-light', color:'#000', marginLeft:140},
 
 })

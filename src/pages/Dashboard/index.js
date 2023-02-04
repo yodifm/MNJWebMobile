@@ -21,7 +21,7 @@ import {
   HeaderClassicSearchBar,
 } from 'react-native-header-search-bar';
 import {NavigationActions} from 'react-navigation';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 const Dashboard = ({navigation, route}) => {
   const [productData, setProductData] = useState([]);
@@ -30,7 +30,10 @@ const Dashboard = ({navigation, route}) => {
   const [inputSearch, setInputSearch] = useState();
   const [searchOn, setSearchOn] = useState(false);
   const [checkfinish, setCheckFinish] = useState([]);
-
+  const dataReducer = useSelector(state => state.StockDataReducer);
+  const loginReducer = useSelector(state => state.loginReducer);
+  console.log(dataReducer);
+  console.log(loginReducer);
   // const [active, setActive] = useState(false);
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
@@ -40,37 +43,41 @@ const Dashboard = ({navigation, route}) => {
   // const onChangeSearch = val3 => setSearch(val3);
 
   console.log(data.status);
+  console.log(data.warehouse_code);
+  console.log(data)
 
-  
+  const alertFinish = () => {
+    Alert.alert(
+      //title
+      'Confirmation',
+      //body
+      'Are you sure to finish the stock opname',
+      [
+        {
+          text: 'No',
+          onPress: () => navigation.navigate('Dashboard'),
+        },
+        {
+          text: 'Yes',
+          onPress: () => FinishCheck(),
+        },
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
 
   var valCheckFinish;
   const FinishCheck = () => {
-
-    //  Alert.alert(
-    //       //title
-    //       'Confirmation',
-    //       //body
-    //       'Are you sure to finish the stock opname',
-    //       [
-    //         {
-    //           text: 'No',
-    //           onPress: () => console.log('Yes Pressed'),
-    //         },
-    //         {
-    //           text: 'Yes',
-    //           onPress: () => navigation.navigate('StartStock'),
-    //         },
-            
-    //       ],
-    //       {cancelable: false},
-    //       //clicking out side of alert will not cancel
-    //     );
     valCheckFinish = {
       branch_code: data.branch,
       transaction_number: data.number.transaction_number,
       principal_code: data.code,
-      status : data.status
+      status: data.status,
+      warehouse_code: data.warehouse_code,
     };
+
+    //tambah warehouse_code
 
     console.log(valCheckFinish);
     Axios.post(
@@ -78,9 +85,8 @@ const Dashboard = ({navigation, route}) => {
       valCheckFinish,
     )
       .then(function (response) {
-        
         console.log(response.data);
-       
+
         // console.log(response.data.length)
         var count = Object.keys(response.data).length;
         let stateArray = [];
@@ -94,10 +100,10 @@ const Dashboard = ({navigation, route}) => {
         // setProductData(stateArray);
         setCheckFinish();
         console.log(setCheckFinish);
-        // navigation.navigate('StartStock')
-          navigation.dispatch(
-          StackActions.push('SignIn', { test: 'Test Params' })
-      )
+        navigation.navigate('FirstPage');
+        //     navigation.dispatch(
+        //     StackActions.push('SignIn', { test: 'Test Params' })
+        // )
       })
       .catch(err => {
         console.log('error', err);
@@ -124,6 +130,9 @@ const Dashboard = ({navigation, route}) => {
     )
       .then(function (response) {
         console.log(response.data);
+    
+
+
         if (response.data == null) {
           //function to make two option alert
           Alert.alert(
@@ -141,6 +150,7 @@ const Dashboard = ({navigation, route}) => {
             //clicking out side of alert will not cancel
           );
         }
+
         // console.log(response.data.length)
         var count = Object.keys(response.data).length;
         let stateArray = [];
@@ -158,6 +168,7 @@ const Dashboard = ({navigation, route}) => {
         console.log('error', err);
       });
   };
+  // }
 
   var val3;
   // console.log(data)
@@ -251,7 +262,7 @@ const Dashboard = ({navigation, route}) => {
   //     warehouse_code : data.warehouse_code,
   //     status : data.status,
   //   }
-    
+
   //   // console.log(val3)
   //   Axios.post(
   //     'https://marganusantarajaya.com/api_stock_opname/display/list_product.php',
@@ -275,25 +286,22 @@ const Dashboard = ({navigation, route}) => {
   //     });
   // }), [];
 
-  
-
   return (
     <View style={styles.page}>
       <Header title="Search The Product" subTitle="Make sure it's valid" />
-      <View style={styles.searchdesign}>
-        <TextInput
-           placeholderTextColor="#000" 
-          placeholder="Search Product"
-          onChangeText={text => setInputSearch(text)}
-          style={styles.searchinput}></TextInput>
+      {/* <View style={styles.searchdesign}> */}
+      <TextInput
+        placeholderTextColor="#000"
+        placeholder="Search Product"
+        onChangeText={text => setInputSearch(text)}
+        style={styles.searchinput}></TextInput>
+      <Gap height={10} />
 
-        <Button
-          txt="Search"
-          onPress={() => SearchProduct()}
-          style={styles.buttonsearch}></Button>
-      </View>
-
-    
+      <Button
+        txt="Search"
+        onPress={() => SearchProduct()}
+        style={styles.buttonsearch}></Button>
+      {/* </View> */}
 
       {/* <HeaderSearchBar onChangeText={text => console.log(text)} /> */}
       <View style={styles.container}>
@@ -307,7 +315,7 @@ const Dashboard = ({navigation, route}) => {
                   color: '#6E5DE7',
                   fontWeight: 'light',
                 }}>
-                Barang rusak
+                List Product Rusak
               </Text>
             ) : null}
             {data.status == 'B' ? (
@@ -318,7 +326,7 @@ const Dashboard = ({navigation, route}) => {
                   color: '#6E5DE7',
                   fontWeight: 'light',
                 }}>
-                Barang Baru
+                List Product Baru
               </Text>
             ) : null}
             {data.status == 'U' ? (
@@ -329,12 +337,18 @@ const Dashboard = ({navigation, route}) => {
                   color: '#6E5DE7',
                   fontWeight: 'light',
                 }}>
-                Barang UPB
+                List Product UPB
               </Text>
             ) : null}
           </View>
-          <Gap height={8} />
-          <Text style={styles.text}>List Product</Text>
+          <Gap height={8} />    
+          <View style={{flexDirection: 'row', alignItems:'center'}}>
+            <Text style={{color:'#91C0EB'}}>■</Text>
+            <Text style={{fontSize:12, color:'#000'}}> Tidak Terdapat Selisih    </Text>
+            <Text style={{color:'#CB4848'}}>■</Text>
+            <Text style={{fontSize:12, color:'#000'}}> Terdapat Selisih</Text>
+          </View>
+          {/* <Text style={styles.text}>List Product</Text> */}
           <Gap height={8} />
 
           {productData.map(item => {
@@ -345,10 +359,11 @@ const Dashboard = ({navigation, route}) => {
                   // key={item.value.product_code}
                   onPress={e => chooseProduct(e, item.value)}>
                   {console.log(item.value.editted)}
-                  {item.value.editted == 1 ? (
+
+                  {item.value.editted == 2 ? (
                     <View
                       style={{
-                        backgroundColor: 'blue',
+                        backgroundColor: '#CB4848',
                         borderRadius: 12,
                         paddingHorizontal: 8,
                         flexDirection: 'row',
@@ -363,42 +378,96 @@ const Dashboard = ({navigation, route}) => {
                           }}>
                           {item.value.product_name}
                         </Text>
-                        <Text
-                          style={{
+                        {loginReducer.jabatan === 'PAGDG' ? ( <Text
+                         >
+                         
+                        </Text> ) : <Text  style={{
                             fontSize: 12,
                             fontFamily: 'Poppins-Light',
                             color: '#FFF',
-                          }}>
-                          {item.value.stok_karton} Karton
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Poppins-Light',
-                            color: '#FFF',
-                          }}>
-                          {item.value.stok_box} Box
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Poppins-Light',
-                            color: '#FFF',
-                          }}>
-                          {item.value.stok_unit} Unit
-                        </Text>
-                        <Gap height={8} />
-                        <View>
+                          }}> Stock : {item.value.stok_karton} Karton - {item.value.stok_box} Box - {item.value.stok_unit} Unit</Text>}
+                     
+
+                        <Gap height={4} />
+                        {loginReducer.jabatan === 'PAGDG' ? ( <View>
                           <Text
-                            style={{
+                            >
+                            
+                          </Text>
+                        </View>) : <Text style={{
                               fontSize: 15,
                               fontFamily: 'Poppins-Medium',
                               color: '#FFF',
                               fontWeight: 'light',
-                            }}>
-                            Total Unit {item.value.stok_total}
+                            }}>Total Stock {item.value.stok_total} Unit</Text>}
+                       
+
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontFamily: 'Poppins-Light',
+                            color: '#071A5B',
+                          }}>
+                          input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                        </Text>
+                       
+                        
+                       
+                      </View>
+                    </View>
+                  ) : item.value.editted == 1 ? (
+                    <View
+                      style={{
+                        backgroundColor: '#91C0EB',
+                        borderRadius: 12,
+                        paddingHorizontal: 8,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <View style={styles.move}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontFamily: 'Poppins-Medium',
+                            color: '#FFF',
+                          }}>
+                          {item.value.product_name}
+                        </Text>
+
+                        {loginReducer.jabatan === 'PAGDG'  ? (<Text
+                          >
+                        </Text>) : <Text style={{
+                            fontSize: 12,
+                            fontFamily: 'Poppins-Light',
+                            color: '#FFF',
+                          }}>Stock : {item.value.stok_karton} Karton - {item.value.stok_box} Box - {item.value.stok_unit} Unit</Text>}
+                        
+
+                        <Gap height={4} />
+
+                        {loginReducer.jabatan === 'PAGDG' ? ( <View>
+                          <Text
+                           >
+                           
                           </Text>
-                        </View>
+                        </View>) : <Text  style={{
+                              fontSize: 15,
+                              fontFamily: 'Poppins-Medium',
+                              color: '#FFF',
+                              fontWeight: 'light',
+                            }}>Total Stock {item.value.stok_total} Unit</Text>}
+                       
+
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontFamily: 'Poppins-Light',
+                            color: '#071A5B',
+                          }}>
+                          input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                        </Text>
+                       
+                       
                       </View>
                     </View>
                   ) : (
@@ -414,21 +483,29 @@ const Dashboard = ({navigation, route}) => {
                         <Text style={styles.nameProduct}>
                           {item.value.product_name}
                         </Text>
-                        <Text style={styles.quantity}>
-                          {item.value.stok_karton} Karton
-                        </Text>
-                        <Text style={styles.quantity}>
-                          {item.value.stok_box} Box
-                        </Text>
-                        <Text style={styles.quantity}>
-                          {item.value.stok_unit} Unit
-                        </Text>
-                        <Gap height={8} />
-                        <View>
-                          <Text style={styles.total}>
-                            Total Unit {item.value.stok_total}
-                          </Text>
+                        
+
+                        <View style={styles.quantity}>
+
+                        {loginReducer.jabatan === 'PAGDG' ? ( <Text >
+                          
+                        </Text>) : <Text style={styles.quantityinput}>Stock : {item.value.stok_karton} Karton - {item.value.stok_box} Box - {item.value.stok_unit} Unit</Text>}
+                          
+                        
+                     
+                      
+                        <Gap height={4} />
+                        {loginReducer.jabatan === 'PAGDG' ? (<Text>
+                          
+                        </Text>) : <Text style={styles.total}>Total Stock {item.value.stok_total} Unit</Text>}
+                        
+
                         </View>
+                        <Text style={styles.quantityinput}>
+                        input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                        </Text>
+                      
+                          
                       </View>
                     </View>
                   )}
@@ -441,7 +518,9 @@ const Dashboard = ({navigation, route}) => {
         </ScrollView>
 
         <Gap height={30} />
-        <Button txt="Finish Stock Opname" onPress={() => FinishCheck()} />
+        {/* <Button txt="Finish Stock Opname" onPress={() => FinishCheck()} /> */}
+        {loginReducer.jabatan === 'PAGDG' ? (<Text></Text>) : <Button txt="Finish Stock Opname" onPress={() => alertFinish()} />}
+        
       </View>
     </View>
   );
@@ -471,11 +550,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nameProduct: {fontSize: 14, fontFamily: 'Poppins-Medium', color: '#000'},
-  quantity: {fontSize: 12, fontFamily: 'Poppins-Light', color: '#000'},
+  quantity: {fontSize: 12, fontFamily: 'Poppins-Light', color: '#6E5DE7'},
+  quantityinput:{
+    fontSize: 12, fontFamily: 'Poppins-Light', color: '#CB4848'
+  },
   total: {
     fontSize: 15,
     fontFamily: 'Poppins-Medium',
     color: '#6E5DE7',
+    fontWeight: 'light',
+  },
+  totalinput: {
+    fontSize: 15,
+    fontFamily: 'Poppins-Medium',
+    color: '#071A5B',  
     fontWeight: 'light',
   },
   move: {padding: 8, marginRight: 8, marginLeft: 5},
@@ -491,10 +579,11 @@ const styles = StyleSheet.create({
   },
   searchdesign: {flexDirection: 'row', alignItems: 'center', paddingLeft: 15},
   searchinput: {
-    width: 250,
+    // width: 250,
     backgroundColor: 'white',
     color: 'black',
-    marginBottom: 25,
+    textAlign: 'center',
+    // marginBottom: 25,
     borderRadius: 8,
   },
   buttonsearch: {},
