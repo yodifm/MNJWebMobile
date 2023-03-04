@@ -7,8 +7,11 @@ const initStateLogin = {
         nama: '',
         cabang: '',
         region: '',
-        principal: '',
-        level: ''
+        // principal: '',
+        group_product: '',
+        level: '',
+        ed: '',
+        batch: ''
 } 
 
 const initStateUserData= {
@@ -18,9 +21,13 @@ const initStateUserData= {
 const initStateProductData= {
     branch_code         : '',
     transaction_number  : '',
-    principal_code      : '',
+    // principal_code      : '',
+    group_product      : '',
     warehouse_code      : '',
     status              : '',
+    ed              : '',
+    batch              : '',
+    
 }
 
 const initStateInputProductData= {
@@ -60,9 +67,14 @@ if(action.type === 'SET_STOCK_DATA'){
         ...state,
         branch_code         : action.value.branch,
         transaction_number  : action.value.number.transaction_number,
-        principal_code      : action.value.code,
+        // principal_code      : action.value.code,
+        group_product      : action.value.group,
         warehouse_code      : action.value.warehouse_code,
         status              : action.value.status ,
+        ed              : action.value.ed ,
+        batch              : action.value.batch ,
+      
+        
     }
 }
 return state;

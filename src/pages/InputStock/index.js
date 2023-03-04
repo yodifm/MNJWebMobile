@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, TextInput, Alert} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Header, Product, TextInput2, Gap, Button, ProductHistory} from '../../components';
 import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
@@ -23,6 +23,10 @@ const InputStock = ({navigation, route}) => {
   const [stock, setStock] = useState(initState);
   const [selisih, setSelisih] = useState([]);
   const [history, setHistory] = useState([]);
+
+  const textInput1 = useRef(null);
+  const textInput2 = useRef(null);
+  const textInput3 = useRef(null);
   
 
   const {data} = route.params;
@@ -31,6 +35,9 @@ const InputStock = ({navigation, route}) => {
 
   const displayunit = `${data.stok_karton} Karton - ${data.stok_box} Box - ${data.stok_unit} Unit`;
   const displaytotal = `${data.stok_total} Unit`;
+  const expired = `Expired Date : ${data.ed}`;
+  const batch = `Batch : ${data.batch} `;
+   
 
 
   console.log(data.product_name);
@@ -51,19 +58,23 @@ var valhistory;
   valhistory = {
     branch_code: dataReducer.branch_code,
     transaction_number: dataReducer.transaction_number,
-    principal_code: dataReducer.principal_code,
+    // principal_code: dataReducer.principal_code,
+    group_product: dataReducer.group_product,
     status: dataReducer.status,
     warehouse_code: dataReducer.warehouse_code,
 
     product_code: data.product_code,
+    ed: data.ed,
+    batch: data.batch
   };
 
   Axios.post(
-    'https://marganusantarajaya.com/api_stock_opname/display/history_stok.php',
+    'https://marganusantarajaya.com/api_stock_opname/displayb/history_stok.php',
     valhistory,
   ) .then(function (response) {
     console.log(response)
     // console.log(response.data.length)
+   
     var count = Object.keys(response.data).length;
     let stateArray = [];
     for (var i = 0; i < count; i++) {
@@ -73,7 +84,11 @@ var valhistory;
       });
     }
     // console.log(stateArray);
+    textInput1.current.clear();
+    textInput2.current.clear();
+    textInput3.current.clear();
     setHistory(stateArray);
+  
   })
   .catch(err => {
     console.log('error', err);
@@ -84,16 +99,19 @@ var valhistory;
     valhistory = {
       branch_code: dataReducer.branch_code,
       transaction_number: dataReducer.transaction_number,
-      principal_code: dataReducer.principal_code,
+      // principal_code: dataReducer.principal_code,
+      group_product: dataReducer.group_product,
       status: dataReducer.status,
       warehouse_code: dataReducer.warehouse_code,
 
       product_code: data.product_code,
+      ed: data.ed,
+    batch: data.batch
     };
 
     // console.log(val3)
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/history_stok.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/history_stok.php',
       valhistory,
     )
       
@@ -116,7 +134,7 @@ var valhistory;
       });
 
       Axios.post(
-        'https://marganusantarajaya.com/api_stock_opname/display/selisih_stok.php',
+        'https://marganusantarajaya.com/api_stock_opname/displayb/selisih_stok.php',
         valhistory,
       )
         
@@ -137,17 +155,22 @@ var valhistory;
     console.log(data);
     console.log(data.product_code);
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/input_soh.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/input_soh.php',
       {
         key_in_user: loginReducer.username,
 
         branch_code: dataReducer.branch_code,
         transaction_number: dataReducer.transaction_number,
-        principal_code: dataReducer.principal_code,
+        // principal_code: dataReducer.principal_code,
+        group_product: dataReducer.group_product,
         status: dataReducer.status,
         warehouse_code: dataReducer.warehouse_code,
 
+        
+        ed: data.ed,
+        batch: data.batch,
         product_code: data.product_code,
+        
         unit1: stock.unit1 != '' ? stock.unit1 : "0",
         unit2: stock.unit2 != '' ? stock.unit2 : "0",
         unit3: stock.unit3 != '' ? stock.unit3 : "0",
@@ -164,15 +187,18 @@ var valhistory;
         valselisih = {
           branch_code: dataReducer.branch_code,
           transaction_number: dataReducer.transaction_number,
-          principal_code: dataReducer.principal_code,
+          // principal_code: dataReducer.principal_code,
+          group_product: dataReducer.group_product,
           status: dataReducer.status,
           warehouse_code: dataReducer.warehouse_code,
 
           product_code: data.product_code,
+          ed: data.ed,
+    batch: data.batch
         };
 
         Axios.post(
-          'https://marganusantarajaya.com/api_stock_opname/display/history_stok.php',
+          'https://marganusantarajaya.com/api_stock_opname/displayb/history_stok.php',
           valselisih,
         )
           
@@ -197,7 +223,7 @@ var valhistory;
         // console.log(response.data.length)
 
         Axios.post(
-          'https://marganusantarajaya.com/api_stock_opname/display/selisih_stok.php',
+          'https://marganusantarajaya.com/api_stock_opname/displayb/selisih_stok.php',
           valselisih,
         )
           .then(function (response1) {
@@ -207,6 +233,9 @@ var valhistory;
             console.log(response1.config.data);
             setSelisih(response1.data[0]);
             setRenderComponentB(true);
+            
+         
+            
               //function to make two option alert
               Alert.alert(
                 //title
@@ -218,6 +247,7 @@ var valhistory;
                     text: 'OK',
                     // onPress: () => navigation.navigate('InputStock'),
                     onPress: () => testHistory(),
+                   
                     
                   },
                 ],    
@@ -225,6 +255,7 @@ var valhistory;
                 //clicking out side of alert will not cancel
               ).then(function (response){
                 navigation.navigate('InputStock')
+                
                 
               })
           })
@@ -235,6 +266,7 @@ var valhistory;
       .catch(err => {
         console.log('error', err);
       });
+      setStock(initState)
   };
 
   return (
@@ -253,6 +285,9 @@ var valhistory;
         <Product
           label={data.product_name}
           quantity={loginReducer.jabatan === 'PAGDG'  ? (<Text></Text>) : <Text>{displayunit}</Text>}
+          expired = {expired}
+          batch = {batch}
+
           total={loginReducer.jabatan === 'PAGDG'  ? (<Text></Text>) : <Text>{displaytotal}</Text>}
           selisih={selisih}  
           jabatan = {loginReducer.jabatan}
@@ -267,7 +302,7 @@ var valhistory;
 
          </View>
             <TextInput
-              
+              ref={textInput3}   
             
             color="#000"
               style={styles.input1}
@@ -280,6 +315,7 @@ var valhistory;
             />     
             <Gap width={30} />
             <TextInput
+            ref={textInput2}
             color="#000"
               style={styles.input1}
               placeholder="Box"
@@ -291,6 +327,7 @@ var valhistory;
             />
             <Gap width={30} />
             <TextInput
+            ref={textInput1}
             color="#000"
               style={styles.input1}
               placeholder="Unit"

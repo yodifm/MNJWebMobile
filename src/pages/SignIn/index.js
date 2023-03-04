@@ -68,7 +68,7 @@ const SignIn = ({navigation}) => {
         } else {
           val = {branch_code: res.data[0].kode_cbg};
           Axios.post(
-            'https://marganusantarajaya.com/api_stock_opname/display/list_number_stock.php',
+            'https://marganusantarajaya.com/api_stock_opname/displayb/list_number_stock.php',
             val,
           )
             .then(result => {
@@ -157,8 +157,8 @@ const SignIn = ({navigation}) => {
           <View style={{backgroundColor: 'white'}}>
             <Gap height={30} />
           </View>
-          <Text style={styles.versi}>Stock Opname Versi 1.0</Text>
-          <Text style={styles.name}>EDP MNJ</Text>
+          <Text style={styles.versi}>Created by EDP MNJ</Text>
+          <Text style={styles.name}>Version 1.0</Text>
         </View>
       </View>
     </ScrollView>

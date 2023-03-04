@@ -45,6 +45,7 @@ const Dashboard = ({navigation, route}) => {
   console.log(data.status);
   console.log(data.warehouse_code);
   console.log(data)
+ 
 
   const alertFinish = () => {
     Alert.alert(
@@ -72,7 +73,8 @@ const Dashboard = ({navigation, route}) => {
     valCheckFinish = {
       branch_code: data.branch,
       transaction_number: data.number.transaction_number,
-      principal_code: data.code,
+      // principal_code: data.code,
+      group_product: data.group,
       status: data.status,
       warehouse_code: data.warehouse_code,
     };
@@ -81,7 +83,7 @@ const Dashboard = ({navigation, route}) => {
 
     console.log(valCheckFinish);
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/finish_stok.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/finish_stok.php',
       valCheckFinish,
     )
       .then(function (response) {
@@ -117,7 +119,8 @@ const Dashboard = ({navigation, route}) => {
     valSearch = {
       branch_code: data.branch,
       transaction_number: data.number.transaction_number,
-      principal_code: data.code,
+      // principal_code: data.code,
+      group_product: data.group,
       warehouse_code: data.warehouse_code,
       status: data.status,
       product: inputSearch,
@@ -125,7 +128,7 @@ const Dashboard = ({navigation, route}) => {
 
     // console.log(val3)
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_product_search.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_product_search.php',
       valSearch,
     )
       .then(function (response) {
@@ -172,36 +175,37 @@ const Dashboard = ({navigation, route}) => {
 
   var val3;
   // console.log(data)
-  if (productData == []) {
-    val3 = {
-      branch_code: data.branch,
-      transaction_number: data.number.transaction_number,
-      principal_code: data.code,
-      warehouse_code: data.warehouse_code,
-      status: data.status,
-    };
-    console.log(val3);
-    Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_product_status.php',
-      val3,
-    )
-      .then(function (response) {
-        // console.log(response.data.length)
-        var count = Object.keys(response.data).length;
-        let stateArray = [];
-        for (var i = 0; i < count; i++) {
-          stateArray.push({
-            value: response.data[i],
-            // label: response.data[i],
-          });
-        }
-        // console.log(stateArray);
-        setProductData(stateArray);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-  }
+  // if (productData == []) {
+  //   val3 = {
+  //     branch_code: data.branch,
+  //     transaction_number: data.number.transaction_number,
+  //     // principal_code: data.code,
+  //     group_product: data.group,
+  //     warehouse_code: data.warehouse_code,
+  //     status: data.status,
+  //   };
+  //   console.log(val3);
+  //   Axios.post(
+  //     'https://marganusantarajaya.com/api_stock_opname/displayb/list_product_search.php',
+  //     val3,
+  //   )
+  //     .then(function (response) {
+  //       // console.log(response.data.length)
+  //       var count = Object.keys(response.data).length;
+  //       let stateArray = [];
+  //       for (var i = 0; i < count; i++) {
+  //         stateArray.push({
+  //           value: response.data[i],
+  //           // label: response.data[i],
+  //         });
+  //       }
+  //       // console.log(stateArray);
+  //       setProductData(stateArray);
+  //     })
+  //     .catch(err => {
+  //       console.log('error', err);
+  //     });
+  // }
 
   // const searchFilter = (text) => {
   //   if(text) {
@@ -236,7 +240,7 @@ const Dashboard = ({navigation, route}) => {
   //   )
   // }
 
-  const chooseProduct = (e, product) => {
+  const chooseProduct = (e, product ) => {
     console.log(e);
     // e.preventDefault()
     // console.log(product)
@@ -244,9 +248,13 @@ const Dashboard = ({navigation, route}) => {
     dispatch({
       type: 'SET_INPUT_DATA',
       value: product,
+      
+    
     });
     navigation.navigate('InputStock', {
       data: product,
+    
+     
     });
   };
 
@@ -265,7 +273,7 @@ const Dashboard = ({navigation, route}) => {
 
   //   // console.log(val3)
   //   Axios.post(
-  //     'https://marganusantarajaya.com/api_stock_opname/display/list_product.php',
+  //     'https://marganusantarajaya.com/api_stock_opname/displayb/list_product.php',
   //     valEffect,
   //   )
   //     .then(function (response) {
@@ -353,7 +361,7 @@ const Dashboard = ({navigation, route}) => {
 
           {productData.map(item => {
             return (
-              <View key={item.value.product_code}>
+              <View key={item.value.num_row}>
                 <TouchableOpacity
                   activeOpacity={0.5}
                   // key={item.value.product_code}
@@ -399,16 +407,17 @@ const Dashboard = ({navigation, route}) => {
                               fontFamily: 'Poppins-Medium',
                               color: '#FFF',
                               fontWeight: 'light',
-                            }}>Total Stock {item.value.stok_total} Unit</Text>}
+                            }}>Expired Date : {item.value.ed} </Text>}
                        
 
                         <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Poppins-Light',
-                            color: '#071A5B',
-                          }}>
-                          input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                         style={{
+                          fontSize: 15,
+                          fontFamily: 'Poppins-Medium',
+                          color: '#FFF',
+                          fontWeight: 'light',
+                        }}>
+                         Batch : {item.value.batch}
                         </Text>
                        
                         
@@ -455,16 +464,17 @@ const Dashboard = ({navigation, route}) => {
                               fontFamily: 'Poppins-Medium',
                               color: '#FFF',
                               fontWeight: 'light',
-                            }}>Total Stock {item.value.stok_total} Unit</Text>}
+                            }}>Expired Date : {item.value.ed} </Text>}
                        
 
                         <Text
-                          style={{
-                            fontSize: 12,
-                            fontFamily: 'Poppins-Light',
-                            color: '#071A5B',
-                          }}>
-                          input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                         style={{
+                          fontSize: 15,
+                          fontFamily: 'Poppins-Medium',
+                          color: '#FFF',
+                          fontWeight: 'light',
+                        }}>
+                         Batch : {item.value.batch}
                         </Text>
                        
                        
@@ -489,7 +499,7 @@ const Dashboard = ({navigation, route}) => {
 
                         {loginReducer.jabatan === 'PAGDG' ? ( <Text >
                           
-                        </Text>) : <Text style={styles.quantityinput}>Stock : {item.value.stok_karton} Karton - {item.value.stok_box} Box - {item.value.stok_unit} Unit</Text>}
+                        </Text>) : <Text style={styles.quantity}>Stock : {item.value.stok_karton} Karton - {item.value.stok_box} Box - {item.value.stok_unit} Unit</Text>}
                           
                         
                      
@@ -497,12 +507,12 @@ const Dashboard = ({navigation, route}) => {
                         <Gap height={4} />
                         {loginReducer.jabatan === 'PAGDG' ? (<Text>
                           
-                        </Text>) : <Text style={styles.total}>Total Stock {item.value.stok_total} Unit</Text>}
+                        </Text>) : <Text style={styles.total}>Expired Date : {item.value.ed} </Text>}
                         
 
                         </View>
                         <Text style={styles.quantityinput}>
-                        input : {item.value.stok_input_karton} Karton - {item.value.stok_input_box} Box - {item.value.stok_input_unit} Unit
+                       Batch : {item.value.batch}
                         </Text>
                       
                           
@@ -552,7 +562,10 @@ const styles = StyleSheet.create({
   nameProduct: {fontSize: 14, fontFamily: 'Poppins-Medium', color: '#000'},
   quantity: {fontSize: 12, fontFamily: 'Poppins-Light', color: '#6E5DE7'},
   quantityinput:{
-    fontSize: 12, fontFamily: 'Poppins-Light', color: '#CB4848'
+    fontSize: 15,
+                          fontFamily: 'Poppins-Medium',
+                          color: '#6E5DE7',
+                          fontWeight: 'light',
   },
   total: {
     fontSize: 15,

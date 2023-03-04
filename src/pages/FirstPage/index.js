@@ -92,7 +92,7 @@ const FirstPage = ({navigation, route}) => {
       branch_code: loginReducer.kode_cbg,
     };
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_number_stock.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_number_stock.php',
       val,
     )
       .then(result => {
@@ -146,7 +146,7 @@ const FirstPage = ({navigation, route}) => {
 
     // console.log(val3)
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_transaction_closing.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_transaction_closing.php',
       valListClosing,
     )
       .then(function (response) {

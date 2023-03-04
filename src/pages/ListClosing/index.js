@@ -71,7 +71,7 @@ const ListClosing = ({navigation, route}) => {
 
       // console.log(val3)
       Axios.post(
-        'https://marganusantarajaya.com/api_stock_opname/display/closing_stok.php',
+        'https://marganusantarajaya.com/api_stock_opname/displayb/closing_stok.php',
         valClosingData,
       )
         .then(function (response) {

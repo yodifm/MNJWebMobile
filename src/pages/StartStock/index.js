@@ -17,15 +17,19 @@ import Axios from 'axios';
 const initState = {
   branch: '',
   number: '',
-  code: '',
+  group:'',
+  // code: '',
   warehouse_code: '',
   status: '',
+
 };
 
 const StartStock = ({navigation, route}) => {
   const [form, setForm] = useForm({
     number: '',
-    code: '',
+    group:'',
+    // code: '',
+    group:'',
     status: '',
     warehouse_code: '',
   });
@@ -101,8 +105,11 @@ const StartStock = ({navigation, route}) => {
       branch_code: loginReducer.kode_cbg,
       transaction_number: value.transaction_number,
     };
+    // Axios.post(
+    //   'https://marganusantarajaya.com/api_stock_opname/display/list_principal.php',
+    //   val3,
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_principal.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_group_product.php',
       val3,
     )
       .then(function (response) {
@@ -128,8 +135,10 @@ const StartStock = ({navigation, route}) => {
         let stateArray = [];
         for (var i = 0; i < count; i++) {
           stateArray.push({
-            value: response.data[i].principal_code,
-            label: response.data[i].principal_code,
+            // value: response.data[i].principal_code,
+            // label: response.data[i].principal_code,
+            value: response.data[i].group_product,
+            label: response.data[i].group_product,
           });
         }
         console.log(stateArray);
@@ -145,11 +154,12 @@ const StartStock = ({navigation, route}) => {
     val4 = {
       branch_code: loginReducer.kode_cbg,
       transaction_number: chosen.number.transaction_number,
-      principal_code: value.value,
+      // principal_code: value.value,
+      group_product: value.value,
     };
     console.log(val4);
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_warehouse.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_warehouse.php',
       val4,
     )
       .then(function (response) {
@@ -193,13 +203,14 @@ const StartStock = ({navigation, route}) => {
     val5 = {
       branch_code: loginReducer.kode_cbg,
       transaction_number: chosen.number.transaction_number,
-      principal_code: chosen.code,
+      // principal_code: chosen.code,
+      group_product: chosen.group,
       warehouse_code: value.value,
     };
     console.log(val5);
 
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_status.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_status.php',
       val5,
     )
       .then(function (response) {
@@ -250,7 +261,7 @@ const StartStock = ({navigation, route}) => {
 
     // console.log(val3)
     Axios.post(
-      'https://marganusantarajaya.com/api_stock_opname/display/list_transaction_closing.php',
+      'https://marganusantarajaya.com/api_stock_opname/displayb/list_transaction_closing.php',
       valListClosing,
     )
       .then(function (response) {
@@ -344,13 +355,14 @@ const StartStock = ({navigation, route}) => {
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder={'Select Principle'}
+            placeholder={'Select Group Product'}
             searchPlaceholder="Search..."
             value={chosen.code}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
-              setChosen({...chosen, code: item.value});
+              // setChosen({...chosen, code: item.value});
+              setChosen({...chosen, group: item.value});
               handleWarehouse(item);
               setIsFocus(false);
             }}
